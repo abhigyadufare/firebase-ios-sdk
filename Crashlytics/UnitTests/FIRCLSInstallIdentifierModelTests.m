@@ -66,9 +66,11 @@ static NSString *const FIRCLSTestHashOfTestInstanceID =
       [[FIRCLSInstallIdentifierModel alloc] initWithInstallations:iid];
   XCTAssertNotNil(model.installID);
 
-  BOOL didRotate = [model regenerateInstallIDIfNeededWithBlock:^(NSString *_Nonnull fiid){
-  }];
-  sleep(1);
+  BOOL __block didRotate = true;
+  dispatch_async_and_wait(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+    didRotate = [model regenerateInstallIDIfNeededWithBlock:^(NSString *_Nonnull fiid){
+    }];
+  });
 
   XCTAssertFalse(didRotate);
   XCTAssertEqualObjects([_defaults objectForKey:FABInstallationUUIDKey], model.installID);

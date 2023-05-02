@@ -101,6 +101,12 @@ static unsigned long long FIRCLSInstallationsWaitTime = 10 * NSEC_PER_SEC;
 - (BOOL)regenerateInstallIDIfNeededWithBlock:(void (^)(NSString *fiid))block {
   BOOL __block didRotate = false;
 
+  bool isMainThread = NSThread.isMainThread;
+  if (isMainThread) {
+    FIRCLSWarningLog(@"Crashlytics checked for rotated Install ID on the main thread, which can't succeed. This can happen if the app crashed the last run and Crashlytics is uploading urgently.");
+    return false;
+  }
+
   dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 
   // This runs Completion async, so wait a reasonable amount of time for it to finish.
