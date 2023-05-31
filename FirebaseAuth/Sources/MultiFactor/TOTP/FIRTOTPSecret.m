@@ -45,14 +45,15 @@ NS_ASSUME_NONNULL_BEGIN
   return _secretKey;
 }
 
-- (NSString *)generateQRCodeURLWithAccountName:(NSString *)accountName issuer:(NSString *)issuer {
+- (nullable NSString *)generateQRCodeURLWithAccountName:(NSString *)accountName issuer:(NSString *)issuer {
   if (!accountName || !self.secretKey || !self.hashingAlgorithm || !self.codeLength) {
     return nil;
   }
 
   NSString *urlString = [NSString
-      stringWithFormat:@"otpauth://totp/%@:%@?secret=%@&issuer=%@&algorithm=%@&digits=%ld", issuer,
-                       accountName, self.secretKey, issuer, self.hashingAlgorithm, self.codeLength];
+      stringWithFormat:@"otpauth://totp/%@:%@?secret=%@&issuer=%@&digits=%ld", issuer,
+                       accountName, self.secretKey, issuer, self.codeLength];
+  NSLog(@"URL= %@", urlString);
   return urlString;
 }
 
